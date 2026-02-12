@@ -11,6 +11,7 @@ jobs:
       # 第二步：在WSL中安装系统依赖（安卓打包需要）
       - name: Install system dependencies (WSL)
         run: |
+          wsl "cd /home/haoes && sudo apt update -y && sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5"
           wsl sudo apt update -y
           wsl sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5
       
