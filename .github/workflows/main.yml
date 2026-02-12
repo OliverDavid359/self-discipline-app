@@ -1,37 +1,33 @@
-# 工作流名称（随便起，方便识别）
 name: Build Android APK
-
-# 触发条件：当你向仓库推送代码时，自动开始打包
 on: [push]
 
-# 打包任务配置
 jobs:
   build:
-    # 云端服务器系统（选Ubuntu 20.04，兼容Buildozer）
-    runs-on: ubuntu-20.04
+    runs-on: self-hosted  # 关键：改用自托管Runner
     steps:
-      # 第一步：拉取仓库里的代码（你的main.py/spec/icon）
+      # 第一步：拉取仓库代码到本地Runner
       - uses: actions/checkout@v4
       
-      # 第二步：安装系统级依赖（安卓打包需要的工具）
-      - name: Install system dependencies
+      # 第二步：在WSL中安装系统依赖（安卓打包需要）
+      - name: Install system dependencies (WSL)
         run: |
-          sudo apt update -y
-          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5
+          wsl sudo apt update -y
+          wsl sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5
       
-      # 第三步：安装Python依赖（Buildozer/Cython等，用国内源提速）
-      - name: Install Python dependencies
+      # 第三步：在WSL中安装Python依赖（国内源提速）
+      - name: Install Python dependencies (WSL)
         run: |
-          pip install --upgrade pip -i https://pypi.tuna.tsinghua.edu.cn/simple
-          pip install buildozer==1.5.0 cython==0.29.36 pytz kivy==2.2.1 -i https://pypi.tuna.tsinghua.edu.cn/simple
+          wsl pip install --upgrade pip -i https://pypi.tuna.tsinghua.edu.cn/simple
+          wsl pip install buildozer==1.5.0 cython==0.29.36 pytz kivy==2.2.1 -i https://pypi.tuna.tsinghua.edu.cn/simple
       
-      # 第四步：开始打包APK（debug版本，可直接安装）
-      - name: Build Android APK
-        run: buildozer android debug
+      # 第四步：在WSL中进入代码目录并打包APK（替换为你的WSL项目路径）
+      - name: Build APK in WSL
+        run: |
+          wsl cd /home/haoes/self_discipline && buildozer android debug  # 替换为你WSL中项目的实际路径
       
-      # 第五步：上传打包好的APK（方便你下载）
+      # 第五步：上传APK（WSL的bin目录映射到Windows，方便上传）
       - name: Upload APK file
         uses: actions/upload-artifact@v4
         with:
-          name: apk-file  # 下载时的压缩包名称
+          name: apk-file
           path: \\wsl$\Ubuntu-22.04\home\haoes\self_discipline\bin\*.apk  # 替换为你的WSL路径
