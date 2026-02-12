@@ -34,4 +34,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: apk-file  # 下载时的压缩包名称
-          path: bin/*.apk # APK文件的生成路径（Buildozer默认在bin目录）
+          path: \\wsl$\Ubuntu-22.04\home\haoes\self_discipline\bin\*.apk  # 替换为你的WSL路径
