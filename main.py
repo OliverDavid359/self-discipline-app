@@ -15,6 +15,7 @@ from kivy.core.window import Window
 from kivy.config import Config
 from typing import Optional, Tuple
 
+
 # ===================== 配置常量 =====================
 CONFIG = {
     "timezone": "Asia/Shanghai",
@@ -460,4 +461,5 @@ class SelfDisciplineApp(App):
 
 
 if __name__ == "__main__":
+
     SelfDisciplineApp().run()
