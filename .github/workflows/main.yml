@@ -1,0 +1,37 @@
+# 工作流名称（随便起，方便识别）
+name: Build Android APK
+
+# 触发条件：当你向仓库推送代码时，自动开始打包
+on: [push]
+
+# 打包任务配置
+jobs:
+  build:
+    # 云端服务器系统（选Ubuntu 20.04，兼容Buildozer）
+    runs-on: ubuntu-20.04
+    steps:
+      # 第一步：拉取仓库里的代码（你的main.py/spec/icon）
+      - uses: actions/checkout@v4
+      
+      # 第二步：安装系统级依赖（安卓打包需要的工具）
+      - name: Install system dependencies
+        run: |
+          sudo apt update -y
+          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5
+      
+      # 第三步：安装Python依赖（Buildozer/Cython等，用国内源提速）
+      - name: Install Python dependencies
+        run: |
+          pip install --upgrade pip -i https://pypi.tuna.tsinghua.edu.cn/simple
+          pip install buildozer==1.5.0 cython==0.29.36 pytz kivy==2.2.1 -i https://pypi.tuna.tsinghua.edu.cn/simple
+      
+      # 第四步：开始打包APK（debug版本，可直接安装）
+      - name: Build Android APK
+        run: buildozer android debug
+      
+      # 第五步：上传打包好的APK（方便你下载）
+      - name: Upload APK file
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-file  # 下载时的压缩包名称
+          path: bin/*.apk # APK文件的生成路径（Buildozer默认在bin目录）
